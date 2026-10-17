@@ -2,6 +2,7 @@
 #define ENGINE_H
 
 #include "SDL_render.h"
+#include "SDL_stdinc.h"
 #include <SDL2/SDL.h>
 #include <stdbool.h>
 
@@ -10,6 +11,8 @@ typedef struct {
   SDL_Renderer *renderer;
   bool sdl_initialized;
   bool is_running;
+  Uint64 last_tick;
+  double freq;
   float dt; // Just keep track of the delta time
 } Engine;
 

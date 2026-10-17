@@ -13,8 +13,10 @@ all: $(TARGET)
 $(TARGET):$(OBJ)
 	$(CC) $(OBJ) -o $@ $(LDFLAGS)
 
-$(BUILD)/%.o: src/%.c | $(BUILD)
+HEADERS = $(wildcard include/*.h)
+$(BUILD)/%.o: src/%.c $(HEADERS) | $(BUILD)
 	$(CC) $(CFLAGS) -c $< -o $@
+
 
 $(BUILD):
 	mkdir -p $(BUILD)

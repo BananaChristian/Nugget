@@ -3,6 +3,8 @@
 #include "SDL_error.h"
 #include "SDL_events.h"
 #include "SDL_render.h"
+#include "SDL_stdinc.h"
+#include "SDL_timer.h"
 #include "SDL_video.h"
 #include <stdbool.h>
 #include <stdio.h>
@@ -13,6 +15,8 @@ bool engine_init(Engine *engine) {
     return false;
   }
   engine->sdl_initialized = true;
+  engine->freq = SDL_GetPerformanceFrequency();
+  engine->last_tick = SDL_GetPerformanceCounter();
 
   engine->window = SDL_CreateWindow("Nugget", SDL_WINDOWPOS_CENTERED,
                                     SDL_WINDOWPOS_CENTERED, 680, 480, 0);
@@ -36,6 +40,12 @@ bool engine_init(Engine *engine) {
   return true;
 }
 
+static void engine_tick(Engine *engine) {
+  Uint64 now = SDL_GetPerformanceCounter();
+  engine->dt = (float)((now - engine->last_tick) / engine->freq);
+  engine->last_tick = now;
+}
+
 void engine_run(Engine *engine) {
   while (engine->is_running) {
     SDL_Event event;
@@ -49,6 +59,9 @@ void engine_run(Engine *engine) {
         break;
       }
     }
+
+    engine_tick(engine);
+    SDL_SetRenderDrawColor(engine->renderer, 30, 30, 40, 255);
     SDL_RenderClear(engine->renderer);
     SDL_RenderPresent(engine->renderer);
   }
